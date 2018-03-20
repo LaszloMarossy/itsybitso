@@ -18,7 +18,7 @@ public class PropertiesUtil {
         // Read properties file.
         try {
             prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                "itsybitso." + System.getProperty("env") + ".properties"));
+                "itsybitso.properties"));
             //extra props not in file
             prop.setProperty("extra_property", "extra prop value");
         } catch (IOException e) {

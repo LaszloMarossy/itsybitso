@@ -2,12 +2,15 @@ package com.itsybitso.controller;
 
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class MessageQueue {
-  static MessageQueue ourInstance = new MessageQueue();
+/**
+ * internal queue to keep the diff-orders websocket feed data till they are worked off
+ */
+public class DiffOrdersQueue {
+  static DiffOrdersQueue ourInstance = new DiffOrdersQueue();
   static LinkedBlockingDeque<String> jobs = new LinkedBlockingDeque<>();
 
 
-  public static MessageQueue getInstance() {
+  public static DiffOrdersQueue getInstance() {
     return ourInstance;
   }
 
@@ -35,6 +38,6 @@ public class MessageQueue {
     return jobs.size();
   }
 
-  private MessageQueue() {
+  private DiffOrdersQueue() {
   }
 }

@@ -10,11 +10,7 @@ public class BusinessLogic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessLogic.class);
 
-    public BusinessLogic() {
-
-    }
-
-    public void cleanup() throws Exception {
+    public static void cleanup() throws Exception {
 
         try {
             // common cleanup task for all jobs
@@ -25,7 +21,7 @@ public class BusinessLogic {
         }
     }
 
-    public void setup() throws Exception {
+    public static void setup() throws Exception {
 
         try {
             // common setup task for all jobs

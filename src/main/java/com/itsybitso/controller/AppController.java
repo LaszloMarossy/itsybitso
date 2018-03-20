@@ -1,5 +1,9 @@
 package com.itsybitso.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itsybitso.entity.InternalOrderBook;
+import com.itsybitso.entity.OrderBook;
+import com.itsybitso.executor.AppMonitor;
 import com.itsybitso.executor.DiffOrderConsumer;
 
 import com.itsybitso.executor.DiffOrderQueuer;
@@ -35,6 +39,19 @@ import java.util.concurrent.Future;
 public class AppController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class);
+
+    @GET
+    @Path("service/orderbook")
+    @Consumes("application/json")
+    public Response createInternalOrderBook() throws Exception {
+        OrderBook orderBook = BitsoRestClient.GetBitsoOrderBook();
+        InternalOrderBook.initialize(orderBook);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.writeValueAsString(orderBook);
+        // this returns right away to the REST caller
+        return Response.accepted(objectMapper.writeValueAsString(orderBook)).build();
+    }
 
     @GET
     @Path("service/populatequeue")
@@ -75,6 +92,22 @@ public class AppController {
         // this returns right away to the REST caller
         return Response.accepted("Hello Stranger! Your job CONSUME " +
                 " has started and God willing, will complete successfully in due time.. ").build();
+    }
+
+    @GET
+    @Path("service/startmonitor")
+    @Consumes("application/json")
+    public Response runMonitor() throws Exception {
+        String currentMonitor = AppMonitor.startAppMonitor();
+        return Response.accepted(currentMonitor).build();
+    }
+
+    @GET
+    @Path("service/monitor")
+    @Consumes("application/json")
+    public Response monitor() throws Exception {
+        String currentMonitor = AppMonitor.getCurrentMonitor();
+        return Response.accepted(currentMonitor).build();
     }
 
     @GET

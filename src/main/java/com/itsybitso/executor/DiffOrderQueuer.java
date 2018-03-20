@@ -1,6 +1,6 @@
 package com.itsybitso.executor;
 
-import com.itsybitso.controller.MessageQueue;
+import com.itsybitso.controller.DiffOrdersQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ public class DiffOrderQueuer extends AsyncExecutor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DiffOrderQueuer.class);
   // declaring this here vs. the base class as then there would be only a single thread pool for populate and consume
-  static ExecutorService exe;
+  private static ExecutorService exe;
 
   static {
     // overwrite default in base class
@@ -37,6 +37,7 @@ public class DiffOrderQueuer extends AsyncExecutor {
     Callable<String> call = () -> {
       LOGGER.info("started the startAsyncPopulateQueue execution ");
       try {
+
         // open websocket and subscribe to diff_orders
         BitsoWsClient clientEndPoint = new BitsoWsClient(new URI("wss://ws.bitso.com/"));
         LOGGER.info("############ CONNECTED to Bitso");
@@ -61,9 +62,9 @@ public class DiffOrderQueuer extends AsyncExecutor {
    */
   static Future<String> addToQueue(String msg) {
     Future<String> futureResult = exe.submit(() -> {
-      MessageQueue.addJobToEnd(msg);
+      DiffOrdersQueue.addJobToEnd(msg);
 
-      LOGGER.info(">>>>> queue size " + MessageQueue.sizeOfQueue() + " ==> " + msg);
+      LOGGER.info(">>>>> " + msg);
       return "returning addJobToQueue with job ID " + msg;
     });
 

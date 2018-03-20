@@ -29,6 +29,7 @@
     </properties>
 
     <dependencies>
+
         <!-- https://mvnrepository.com/artifact/org.glassfish.tyrus/tyrus-container-grizzly-client -->
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
@@ -102,6 +103,12 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>jaxrs-api</artifactId>
             <version>3.0.12.Final</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-client -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>3.5.0.Final</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs -->
         <dependency>
