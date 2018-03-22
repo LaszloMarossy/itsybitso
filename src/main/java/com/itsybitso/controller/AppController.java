@@ -48,7 +48,6 @@ public class AppController {
         InternalOrderBook.initialize(orderBook);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValueAsString(orderBook);
         // this returns right away to the REST caller
         return Response.accepted(objectMapper.writeValueAsString(orderBook)).build();
     }
