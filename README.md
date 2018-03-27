@@ -117,6 +117,7 @@ access for both population and consumption.  This could be replaced by a message
 again, this may not be necessary for the above-mentioned reason.
 
 ##Checklist
+
 | Feature | File name | Method name |
 | ------- | --------- | ----------- |
 | Schedule the polling of trades over REST. | com.itsybitso.executor.TradesPoller | com.itsybitso.executor.TradesPoller.startAsyncRefreshRecentTrades |
