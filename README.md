@@ -87,17 +87,17 @@ the Javadoc documentation of `com.itsybitso.bl.TradeAnalyzer.makeTradeDecision` 
 
 ```
 
-##Testing
+## Testing
 Critical business logic is tested in `com.itsybitso.TradeAnalyzerTest`.  For now the correct behavior of asynchronous, 
 concurrent multi-threaded execution was done by monitoring the logs, where the name and number of the executing thread 
 and thread pool is displayed with each log line.
 
 More automated integration and unit testing to come!
 
-##Documentation
+## Documentation
 Besides this README file, also see Javadoc and inline comments.
 
-##Architecture
+## Architecture
 The main entry point to all functionality is in `com.itsybitso.controller.AppController` which is a set of REST endpoints
 that are also used by the JavaFX GUI client to start up all critical processes necessary.  Most calls are performed 
 asynchronously so they do not block execution.  
@@ -116,7 +116,7 @@ For queuing the diff-order Websocket messages, I am using `java.util.concurrent.
 access for both population and consumption.  This could be replaced by a message queue such as kafka or ActiveMQ, but
 again, this may not be necessary for the above-mentioned reason.
 
-##Checklist
+## Checklist
 
 | Feature | File name | Method name |
 | ------- | --------- | ----------- |
