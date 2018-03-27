@@ -8,31 +8,36 @@ import java.util.List;
  * represents info needed by the UI
  * TODO can be separated into diff areas and scheduled/polled separately
  */
-public class Monitor {
+public class DisplayData {
 
   // app performance monitoring
-  int diffOrderQueueSize;
-  int orderBookAskSize;
-  int orderBookBidSize;
-  int numberOfConsumingThreads;
+  private int diffOrderQueueSize;
+  private int orderBookAskSize;
+  private int orderBookBidSize;
+  private int numberOfConsumingThreads;
 
-  // top X asks/bids info for UI
-  List<Order> topAsks;
-  List<Order> topBids;
+  // top X trades/bids info for UI
+  private List<Order> topAsks;
+  private List<Order> topBids;
 
-  public Monitor(
+  // recent trades
+  private List<Trade> recentTrades;
+
+  public DisplayData(
       @JsonProperty("diffOrderQueueSize") int diffOrderQueueSize,
       @JsonProperty("orderBookAskSize") int orderBookAskSize,
       @JsonProperty("orderBookBidSize") int orderBookBidSize,
       @JsonProperty("numberOfConsumingThreads") int numberOfConsumingThreads,
       @JsonProperty("topAsks") List<Order> topAsks,
-      @JsonProperty("topBids") List<Order> topBids) {
+      @JsonProperty("topBids") List<Order> topBids,
+      @JsonProperty("recentTrades") List<Trade> recentTrades) {
     this.diffOrderQueueSize = diffOrderQueueSize;
     this.orderBookAskSize = orderBookAskSize;
     this.orderBookBidSize = orderBookBidSize;
     this.numberOfConsumingThreads = numberOfConsumingThreads;
     this.topAsks = topAsks;
     this.topBids = topBids;
+    this.recentTrades = recentTrades;
   }
 
   public int getDiffOrderQueueSize() {
@@ -81,5 +86,13 @@ public class Monitor {
 
   public void setTopBids(List<Order> topBids) {
     this.topBids = topBids;
+  }
+
+  public List<Trade> getRecentTrades() {
+    return recentTrades;
+  }
+
+  public void setRecentTrades(List<Trade> recentTrades) {
+    this.recentTrades = recentTrades;
   }
 }

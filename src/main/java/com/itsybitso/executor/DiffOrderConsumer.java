@@ -34,7 +34,7 @@ public class DiffOrderConsumer extends AsyncExecutor {
    *
    * @return result string
    */
-  public static Future<String> startAsyncConsumeQueue() {
+  public static String startAsyncConsumeQueue() {
 
     LOGGER.info("started the startAsyncConsumeQueue execution ");
     Callable<String> call = () -> {
@@ -70,8 +70,9 @@ public class DiffOrderConsumer extends AsyncExecutor {
       }
       return result;
     };
+    Future<String> f = exe.submit(call);
 
-    return exe.submit(call);
+    return "started startAsyncConsumeQueue";
 
   }
 
@@ -86,7 +87,7 @@ public class DiffOrderConsumer extends AsyncExecutor {
     numberOfThreads = numThreads;
   }
 
-  public static int sizeOfThreadPool() {
+  static int sizeOfThreadPool() {
     return numberOfThreads;
   }
 
@@ -110,14 +111,10 @@ public class DiffOrderConsumer extends AsyncExecutor {
           return null;
         }
 
-//        Thread.sleep(ThreadLocalRandom.current().nextInt(200, 500));
-
-//        LOGGER.info(sb.append("<<<<< ").append(diffOrder.getPayload()[0].getO())
-//            .append(" prev ").append(previousOrderInfo).toString() );
       } else {
         LOGGER.warn("NON-DIFF-ORDER MESSAGE ON QUEUE: " + jobString);
       }
-      return diffOrder.getPayload()[0].getO();
+      return "processDiffOrderFromQueue finished";
     };
   }
 }

@@ -1,8 +1,5 @@
 package com.itsybitso.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.Properties;
 
@@ -11,8 +8,7 @@ import java.util.Properties;
  */
 public class PropertiesUtil {
 
-    static Properties prop = new Properties();
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesUtil.class);
+    private static Properties prop = new Properties();
 
     static {
         // Read properties file.
@@ -22,12 +18,16 @@ public class PropertiesUtil {
             //extra props not in file
             prop.setProperty("extra_property", "extra prop value");
         } catch (IOException e) {
-            LOGGER.error("could not read properties from file itsybitso." + System.getProperty("env") + ".properties");
+            System.out.println("could not read properties from file itsybitso." + System.getProperty("env") + ".properties");
         }
     }
 
     public static String getProperty(String name) {
         return (String) prop.get(name);
+    }
+
+    public static void setProperty(String key, String value) {
+        prop.setProperty(key, value);
     }
 
 }

@@ -11,11 +11,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class InternalOrderBook {
 
-  static InternalOrderBook ourInstance = new InternalOrderBook();
+  private static InternalOrderBook ourInstance = new InternalOrderBook();
 
-  static ConcurrentHashMap<String, Order> asks = new ConcurrentHashMap<>();
-  static ConcurrentHashMap<String, Order> bids = new ConcurrentHashMap<>();
-  static OrderBook orderBook = null;
+  private static ConcurrentHashMap<String, Order> asks = new ConcurrentHashMap<>();
+  private static ConcurrentHashMap<String, Order> bids = new ConcurrentHashMap<>();
+  private static OrderBook orderBook = null;
 
 
   private InternalOrderBook() {
@@ -33,12 +33,12 @@ public class InternalOrderBook {
    */
   public static void initialize(OrderBook orders) {
     orderBook = orders;
-    Arrays.stream(orderBook.getPayload().asks).forEach(InternalOrderBook::addAsk);
-    Arrays.stream(orderBook.getPayload().bids).forEach(InternalOrderBook::addBid);
+    Arrays.stream(orderBook.getPayload().getAsks()).forEach(InternalOrderBook::addAsk);
+    Arrays.stream(orderBook.getPayload().getBids()).forEach(InternalOrderBook::addBid);
   }
 
   /**
-   * add an ask order to the last position of the asks queue
+   * add an ask order to the last position of the trades queue
    *
    * @return the previous order associated with {@code key}, or
    *   {@code null} if there was no mapping for {@code key}
@@ -62,7 +62,7 @@ public class InternalOrderBook {
 
   /**
    *
-   * @param oid to be removed from internal asks map
+   * @param oid to be removed from internal trades map
    * @return the previous Order associated with {@code key}, or
    *         {@code null} if there was no mapping for {@code key}
    */
@@ -112,7 +112,7 @@ public class InternalOrderBook {
     if (orderBook == null){
       return 0;
     }
-    return orderBook.getPayload().sequence;
+    return orderBook.getPayload().getSequence();
   }
 
 }

@@ -1,6 +1,7 @@
 package com.itsybitso.websocket;
 
 import com.itsybitso.executor.AppMonitor;
+import com.itsybitso.util.PropertiesUtil;
 
 import java.nio.ByteBuffer;
 import java.util.Collections;
@@ -28,30 +29,8 @@ public class MonitorEndpoint {
   private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());
   private static boolean cont = true;
   private static int uniCounter = 0;
-  ExecutorService exe = Executors.newFixedThreadPool(5);
-
-  // async process to maintain static variable
-//  static {
-//    try {
-//      Callable<String> call = () -> {
-//        try {
-//          while (cont) {
-//            uniCounter++;
-//            Thread.sleep(5000);
-//          }
-//        } catch (Exception e) {
-//          Logger.getLogger(MonitorEndpoint.class.getName()).log(Level.SEVERE, null, e);
-//        }
-//        return "done?";
-//      };
-//      ExecutorService exe = Executors.newSingleThreadExecutor();
-//      Future<String> f = exe.submit(call);
-//
-//    } catch (Exception ex) {
-//      Logger.getLogger(MonitorEndpoint.class.getName()).log(Level.SEVERE, null, ex);
-//    }
-//
-//  }
+  private static final String interval = PropertiesUtil.getProperty("");
+  private ExecutorService exe = Executors.newFixedThreadPool(5);
 
 
   @OnOpen
@@ -80,7 +59,7 @@ public class MonitorEndpoint {
       Callable<String> call = () -> {
         try {
           while (cont) {
-            byte[] message = (AppMonitor.getCurrentMonitor()).getBytes();
+            byte[] message = (AppMonitor.getDisplayDataString()).getBytes();
             session.getBasicRemote().sendBinary(ByteBuffer.wrap(message));
             Thread.sleep(1000);
           }

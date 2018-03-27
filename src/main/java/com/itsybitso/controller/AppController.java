@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itsybitso.entity.InternalOrderBook;
 import com.itsybitso.entity.OrderBook;
 import com.itsybitso.executor.AppMonitor;
+import com.itsybitso.executor.BitsoRestClient;
 import com.itsybitso.executor.DiffOrderConsumer;
 
 import com.itsybitso.executor.DiffOrderQueuer;
+import com.itsybitso.executor.TradesPoller;
 import com.itsybitso.util.BitsoHealthCheck;
 import com.itsybitso.util.HealthCheck;
 import com.itsybitso.util.HealthResult;
@@ -41,10 +43,19 @@ public class AppController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class);
 
     @GET
+    @Path("service/gettrades")
+    @Consumes("application/json")
+    public Response getTrades() throws Exception {
+        String f = TradesPoller.startAsyncRefreshRecentTrades();
+        // this returns right away to the REST caller
+        return Response.accepted("started polling the recent trades from Bitso " + f).build();
+    }
+
+    @GET
     @Path("service/orderbook")
     @Consumes("application/json")
     public Response createInternalOrderBook() throws Exception {
-        OrderBook orderBook = BitsoRestClient.GetBitsoOrderBook();
+        OrderBook orderBook = BitsoRestClient.getBitsoOrderBook();
         InternalOrderBook.initialize(orderBook);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -56,10 +67,10 @@ public class AppController {
     @Path("service/populatequeue")
     @Consumes("application/json")
     public Response runPopulateQueue() throws Exception {
-        Future<String> f = DiffOrderQueuer.startAsyncPopulateQueue();
+        String f = DiffOrderQueuer.startAsyncPopulateQueue();
         // this returns right away to the REST caller
         return Response.accepted("Hello Stranger! POPULATE " +
-                " has started and God willing, will continue to run forever.. ").build();
+                " has started and God willing, will continue to run forever.. " + f).build();
     }
 
 
@@ -67,10 +78,10 @@ public class AppController {
     @Path("service/consumequeue")
     @Consumes("application/json")
     public Response runConsumeQueue() throws Exception {
-        Future<String> f = DiffOrderConsumer.startAsyncConsumeQueue();
+        String f = DiffOrderConsumer.startAsyncConsumeQueue();
         // this returns right away to the REST caller
         return Response.accepted("Hello Stranger! CONSUME " +
-                " has started and God willing, will continue to run forever.. ").build();
+                " has started and God willing, will continue to run forever.. " + f).build();
     }
 
     @GET
@@ -86,11 +97,11 @@ public class AppController {
         }
 
         // start consuming again
-        Future<String> f = DiffOrderConsumer.startAsyncConsumeQueue();
+        String f = DiffOrderConsumer.startAsyncConsumeQueue();
 
         // this returns right away to the REST caller
         return Response.accepted("Hello Stranger! Your job CONSUME " +
-                " has started and God willing, will complete successfully in due time.. ").build();
+                " has started and God willing, will complete successfully in due time.. " + f).build();
     }
 
     @GET
@@ -105,7 +116,7 @@ public class AppController {
     @Path("service/monitor")
     @Consumes("application/json")
     public Response monitor() throws Exception {
-        String currentMonitor = AppMonitor.getCurrentMonitor();
+        String currentMonitor = AppMonitor.getDisplayDataString();
         return Response.accepted(currentMonitor).build();
     }
 

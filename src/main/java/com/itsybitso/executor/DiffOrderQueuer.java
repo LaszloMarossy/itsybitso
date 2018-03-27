@@ -33,7 +33,7 @@ public class DiffOrderQueuer extends AsyncExecutor {
    *
    * @return result string - ignored for now
    */
-  public static Future<String> startAsyncPopulateQueue() {
+  public static String startAsyncPopulateQueue() {
     Callable<String> call = () -> {
       LOGGER.info("started the startAsyncPopulateQueue execution ");
       try {
@@ -49,7 +49,8 @@ public class DiffOrderQueuer extends AsyncExecutor {
 
       return "done?";
     };
-    return exe.submit(call);
+    Future<String> f = exe.submit(call);
+    return "startAsyncPopulateQueue started";
   }
 
 
@@ -61,14 +62,13 @@ public class DiffOrderQueuer extends AsyncExecutor {
    * @return Future will be ignored for now
    */
   static Future<String> addToQueue(String msg) {
-    Future<String> futureResult = exe.submit(() -> {
+
+    return exe.submit(() -> {
       DiffOrdersQueue.addJobToEnd(msg);
 
       LOGGER.info(">>>>> " + msg);
       return "returning addJobToQueue with job ID " + msg;
     });
-
-    return futureResult;
 
   }
 
