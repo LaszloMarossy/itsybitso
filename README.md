@@ -102,7 +102,7 @@ The main entry point to all functionality is in `com.itsybitso.controller.AppCon
 that are also used by the JavaFX GUI client to start up all critical processes necessary.  Most calls are performed 
 asynchronously so they do not block execution.  
 
-Critical parts synchronous execution could cause workload pile-ups are
+Critical parts where synchronous execution could cause workload pile-ups are
 executed with multithreaded executors of `java.util.concurrent.ExecutorService.java`.  Populating the internal queue with
 the Bitso Websocket messages, and consuming those messages to update the order book are executed this way.  Areas where 
 this approach is not appropriate (for example periodic polling of Bitso trade data) are executed in a single asynchronous 
