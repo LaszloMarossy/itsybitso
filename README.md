@@ -1,16 +1,13 @@
 # itsybitso
 Bitso trading wrapper implementation with configurable algorithm for pretend-trading.
 
-## setup
+## setup and application startup
 - build the application through maven using JDK 1.8
-- deploy WAR artifact onto a Tomcat 9.0.6 app server (`[CATALINA_HOME]/webapps/` directory)
-- start server
-- monitor log file at `[CATALINA_HOME]/logs/itsybitso/main.log`
-
-## application startup
-After a successful deployment and webserver startup execute the following steps:
-- run the class `com.itsybitso.fx.ItsybitsoWindow` to start the JavaFX UI 
-- push the _**Startup**_ button to trigger server processes startup.  
+- start a Tomcat 9.0.6 app server
+- through the `localhost:8080/manager` admin page of Tomcat, use the *WAR file to deploy* section
+to deploy the `[project_home]itsybitso/target/itsybitso-1.1-SNAPSHOT.war` file
+- using your JDK 1.8 environment execute `java -jar [project_home]itsybitso/target/itsybitso-1.1-SNAPSHOT-jar-with-dependencies.jar` to start the front-end GUI
+- push the _**Startup**_ button to trigger server processes startup.  Optionally monitor the log file at `[CATALINA_HOME]/logs/itsybitso/main.log`
 - wait till the label below the button changes to _**"App Status: all services running, start monitoring!..."**_. During 
 this step the following processes are triggered to start on the server in sequence (the int values represent the number 
 of seconds delay before triggering the process):

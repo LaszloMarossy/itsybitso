@@ -229,13 +229,14 @@ public class ItsybitsoWindow extends Application {
   private void startBackEnd(Label label) {
     try {
       String serverUrl = PropertiesUtil.getProperty("server.rest.url");
+      String deployment = PropertiesUtil.getProperty("server.deployment");
       CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
-      startService(1, httpClient, serverUrl, "/itsybitso/service/orderbook");
-      startService(1, httpClient, serverUrl, "/itsybitso/service/startmonitor");
-      startService(4, httpClient, serverUrl, "/itsybitso/service/gettrades");
-      startService(2, httpClient, serverUrl, "/itsybitso/service/populatequeue");
-      startService(5, httpClient, serverUrl, "/itsybitso/service/consumequeue");
+      startService(1, httpClient, serverUrl, deployment.concat("/service/orderbook"));
+      startService(1, httpClient, serverUrl, deployment.concat("/service/startmonitor"));
+      startService(4, httpClient, serverUrl, deployment.concat("/service/gettrades"));
+      startService(2, httpClient, serverUrl, deployment.concat("/service/populatequeue"));
+      startService(5, httpClient, serverUrl, deployment.concat("/service/consumequeue"));
 
       httpClient.close();
       label.setText("App Status: all services running, start monitoring!...");
@@ -264,8 +265,10 @@ public class ItsybitsoWindow extends Application {
 
   private void connectToWebSocket() {
     WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+    String wsUrl = PropertiesUtil.getProperty("server.ws.url");
+    String deployment = PropertiesUtil.getProperty("server.deployment");
     try {
-      URI uri = URI.create("ws://localhost:8080/itsybitso/monitor");
+      URI uri = URI.create(wsUrl.concat(deployment).concat("/monitor"));
       this.session = container.connectToServer(this, uri);
     } catch (DeploymentException | IOException ex) {
       ex.printStackTrace();
