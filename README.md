@@ -2,36 +2,42 @@
 Bitso trading wrapper implementation with configurable algorithm for pretend-trading.
 
 ## setup and application startup
-- build the application through maven using JDK 1.8
-- start a Tomcat 9.0.6 app server
+- build the application through maven using JDK 1.8 (`mvn clean install`) - this will produce a WAR file for the back-end 
+and a executable JAR file for the front-end GUI
+- start a Tomcat 9.0.6 app server (`./catalina.sh start`)
 - through the `localhost:8080/manager` admin page of Tomcat, use the *WAR file to deploy* section
 to deploy the `[project_home]itsybitso/target/itsybitso-1.1-SNAPSHOT.war` file
-- using your JDK 1.8 environment execute `java -jar [project_home]itsybitso/target/itsybitso-1.1-SNAPSHOT-jar-with-dependencies.jar` to start the front-end GUI
-- push the _**Startup**_ button to trigger server processes startup.  Optionally monitor the log file at `[CATALINA_HOME]/logs/itsybitso/main.log`
-- wait till the label below the button changes to _**"App Status: all services running, start monitoring!..."**_. During 
-this step the following processes are triggered to start on the server in sequence (the int values represent the number 
-of seconds delay before triggering the process):
+- using your JDK 1.8 environment on the same machine where the back-end is deployed 
+execute `java -jar [project_home]itsybitso/target/itsybitso-1.1-SNAPSHOT-jar-with-dependencies.jar` to start the front-end GUI 
+- on the JavaFX window push the _**Startup**_ button to trigger the back-end server processes to start in sequence (see notes below). 
+(Optionally monitor the log file at `[CATALINA_HOME]/logs/itsybitso/main.log`)
+- wait a few secs till the label below the *Startup* button changes to _**"App Status: all services running, start monitoring!..."**_. 
+- push the _**Start Monitoring**_ button to view the content of the application.
+
+
+## notes
+During the server startup, the following steps are triggered sequentially: 
 
     ```      
-         startService(1, httpClient, serverUrl, "/itsybitso/service/orderbook");
-         startService(1, httpClient, serverUrl, "/itsybitso/service/startmonitor");
-         startService(4, httpClient, serverUrl, "/itsybitso/service/gettrades");
-         startService(2, httpClient, serverUrl, "/itsybitso/service/populatequeue");
-         startService(5, httpClient, serverUrl, "/itsybitso/service/consumequeue");
+         startService(1, httpClient, serverUrl, "/[SERVER_URL/DEPLOYMENT]/service/orderbook");
+         startService(1, httpClient, serverUrl, "/[SERVER_URL/DEPLOYMENT]/service/startmonitor");
+         startService(4, httpClient, serverUrl, "/[SERVER_URL/DEPLOYMENT]/service/gettrades");
+         startService(2, httpClient, serverUrl, "/[SERVER_URL/DEPLOYMENT]/service/populatequeue");
+         startService(5, httpClient, serverUrl, "/[SERVER_URL/DEPLOYMENT]/service/consumequeue");
      ```
-    The above server processes can also be triggered separately and/or selectively through the corresponding REST GET 
+     
+The above server processes can also be triggered separately and/or selectively through the corresponding REST GET 
     calls mentioned above. Summary on the above processes:
-     - `orderbook` - get a copy of the orderbook through Bitso REST GET and save it internally
-     - `startmonitor` - start the application monitoring loop that gathers the data for the UI
-     - `gettrades` - gets the most recent X trades from Bitso REST GET endpoint; enhances them for the internal business
+- `orderbook` - get a copy of the orderbook through Bitso REST GET and save it internally
+- `startmonitor` - start the application monitoring loop that gathers the data for the UI
+- `gettrades` - gets the most recent X trades from Bitso REST GET endpoint; enhances them for the internal business
      logic and makes the decision whether to execute a pretend-trade
-     - `populatequeue` - connect to the Bitso diff-orders WS feed and save messages to an in-memory queue (NOTE: later 
-     this could be replaced by an external message queue implementation or a no-sql type document DB like Redis); for the
-     currently observed Bitso traffic the existing solution should be sufficient.
-     - `consumequeue` - start consuming the diff-order messages from the internal queue and update the internal 
+- `populatequeue` - connect to the Bitso diff-orders WS feed and save messages to an in-memory queue (NOTE: later 
+this could be replaced by an external message queue implementation or a no-sql type document DB like Redis); for the
+currently observed Bitso traffic the existing solution should be sufficient.
+- `consumequeue` - start consuming the diff-order messages from the internal queue and update the internal 
      in-memory orderbook (asks/bids)
      
-- push the _**Start Monitoring**_ button to view the content of the application.
 
 If the "_Diff-order queue size_" value of the first table keeps increasing, you can execute the following REST GET call 
 to increase the number of consuming threads of the `consumequeue` process (default set to 5 that should be enough):
