@@ -64,11 +64,11 @@
         <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.glassfish.tyrus/tyrus-client -->
-        <dependency>
-            <groupId>org.glassfish.tyrus</groupId>
-            <artifactId>tyrus-client</artifactId>
-            <version>1.13.1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.glassfish.tyrus</groupId>-->
+            <!--<artifactId>tyrus-client</artifactId>-->
+            <!--<version>1.13.1</version>-->
+        <!--</dependency>-->
 
 
         <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-websocket -->
