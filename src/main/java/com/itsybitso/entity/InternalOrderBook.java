@@ -37,6 +37,10 @@ public class InternalOrderBook {
     Arrays.stream(orderBook.getPayload().getBids()).forEach(InternalOrderBook::addBid);
   }
 
+  public static boolean initialized() {
+    return orderBook == null;
+  }
+
   /**
    * add an ask order to the last position of the trades queue
    *
@@ -115,4 +119,7 @@ public class InternalOrderBook {
     return orderBook.getPayload().getSequence();
   }
 
+  public static OrderBook getOrderBook() {
+    return orderBook;
+  }
 }

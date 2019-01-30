@@ -3,7 +3,8 @@ package com.itsybitso.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itsybitso.entity.InternalOrderBook;
 import com.itsybitso.entity.OrderBook;
-import com.itsybitso.executor.AppMonitor;
+import com.itsybitso.entity.WindowConfig;
+import com.itsybitso.executor.AppMonitors;
 import com.itsybitso.executor.BitsoRestClient;
 import com.itsybitso.executor.DiffOrderConsumer;
 
@@ -26,7 +27,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * REST endpoint to trigger execution of the processes.
@@ -46,17 +46,32 @@ public class AppController {
     @Path("service/gettrades")
     @Consumes("application/json")
     public Response getTrades() throws Exception {
-        String f = TradesPoller.startAsyncRefreshRecentTrades();
+        String f = TradesPoller.getInstance().startAsyncRefreshRecentTrades();
         // this returns right away to the REST caller
         return Response.accepted("started polling the recent trades from Bitso " + f).build();
+    }
+
+    @GET
+    @Path("service/trade/{id}/{ups}/{downs}")
+    @Consumes("application/json")
+    public Response getTrades(@PathParam("id") String id, @PathParam("ups") String ups, @PathParam("downs") String downs) throws Exception {
+        WindowConfig windowConfig = new WindowConfig(id, ups, downs);
+        String f = TradesPoller.getInstance().addNewConfiguration(windowConfig);
+        // this returns right away to the REST caller
+        return Response.accepted("started polling the recent trades from Bitso with " + ups + " and " + downs + " " + f).build();
     }
 
     @GET
     @Path("service/orderbook")
     @Consumes("application/json")
     public Response createInternalOrderBook() throws Exception {
-        OrderBook orderBook = BitsoRestClient.getBitsoOrderBook();
-        InternalOrderBook.initialize(orderBook);
+        OrderBook orderBook;
+        if (!InternalOrderBook.initialized()) {
+            orderBook = BitsoRestClient.getBitsoOrderBook();
+            InternalOrderBook.initialize(orderBook);
+        } else {
+            orderBook = InternalOrderBook.getOrderBook();
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         // this returns right away to the REST caller
@@ -108,17 +123,10 @@ public class AppController {
     @Path("service/startmonitor")
     @Consumes("application/json")
     public Response runMonitor() throws Exception {
-        String currentMonitor = AppMonitor.startAppMonitor();
+        String currentMonitor = AppMonitors.startMonitoring();
         return Response.accepted(currentMonitor).build();
     }
 
-    @GET
-    @Path("service/monitor")
-    @Consumes("application/json")
-    public Response monitor() throws Exception {
-        String currentMonitor = AppMonitor.getDisplayDataString();
-        return Response.accepted(currentMonitor).build();
-    }
 
     @GET
     @Path("admin/health/check")

@@ -25,6 +25,7 @@ public class DiffOrderConsumer extends AsyncExecutor {
   private static ObjectMapper mapper = new ObjectMapper();
   // for the monitor
   private static int numberOfThreads = defaultNumThreads;
+  private static boolean isSubmitted = false;
 
   static {
     exe = Executors.newFixedThreadPool(defaultNumThreads);
@@ -37,43 +38,46 @@ public class DiffOrderConsumer extends AsyncExecutor {
   public static String startAsyncConsumeQueue() {
 
     LOGGER.info("started the startAsyncConsumeQueue execution ");
-    Callable<String> call = () -> {
-      String result = "no result";
-      while (true) {
-        if (DiffOrdersQueue.sizeOfQueue() == 0) {
-          LOGGER.info("|||| SLEEPING ");
-          Thread.sleep(1000);
-        } else {
-//          LOGGER.info("<=== consuming " + DiffOrdersQueue.sizeOfQueue());
-          // this little delay is needed so the while loop is not going crazy and not actually calling
-          // exe.submit() without actually calling processDiffOrderFromQueue() but filling the logs with the
-          // above output
-          Thread.sleep(200);
-          Future<String> futureResult = null;
-          try {
-            futureResult = exe.submit(processDiffOrderFromQueue());
-            futures.add(futureResult);
-          } catch (RejectedExecutionException e) {
-            String leftOutItem = null;
-            if (futureResult != null) {
-              leftOutItem = futureResult.get();
+    if (!isSubmitted) {
+      Callable<String> call = () -> {
+        String result = "no result";
+        while (true) {
+          if (DiffOrdersQueue.sizeOfQueue() == 0) {
+            LOGGER.info("|||| SLEEPING ");
+            Thread.sleep(1000);
+          } else {
+  //          LOGGER.info("<=== consuming " + DiffOrdersQueue.sizeOfQueue());
+            // this little delay is needed so the while loop is not going crazy and not actually calling
+            // exe.submit() without actually calling processDiffOrderFromQueue() but filling the logs with the
+            // above output
+            Thread.sleep(200);
+            Future<String> futureResult = null;
+            try {
+              futureResult = exe.submit(processDiffOrderFromQueue());
+              futures.add(futureResult);
+            } catch (RejectedExecutionException e) {
+              String leftOutItem = null;
+              if (futureResult != null) {
+                leftOutItem = futureResult.get();
+              }
+              LOGGER.error("&*(&*&*(&*(&*(&*(&(&*(&(*& " + leftOutItem);
+              break;
+            } catch (Exception e) {
+              e.printStackTrace();
+              LOGGER.error(e.getMessage(), e);
+              break;
             }
-            LOGGER.error("&*(&*&*(&*(&*(&*(&(&*(&(*& " + leftOutItem);
-            break;
-          } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error(e.getMessage(), e);
-            break;
+
           }
-
         }
-      }
-      return result;
-    };
-    Future<String> f = exe.submit(call);
-
-    return "started startAsyncConsumeQueue";
-
+        return result;
+      };
+      Future<String> f = exe.submit(call);
+      isSubmitted = true;
+      return "started startAsyncConsumeQueue";
+    } else {
+      return "startAsyncConsumeQueue was already started";
+    }
   }
 
   public static void switchPool(String consumeWith) throws NumberFormatException, InterruptedException {

@@ -20,6 +20,7 @@ public class DiffOrderQueuer extends AsyncExecutor {
   private static final Logger LOGGER = LoggerFactory.getLogger(DiffOrderQueuer.class);
   // declaring this here vs. the base class as then there would be only a single thread pool for populate and consume
   private static ExecutorService exe;
+  private static boolean isSubmitted = false;
 
   static {
     // overwrite default in base class
@@ -34,23 +35,28 @@ public class DiffOrderQueuer extends AsyncExecutor {
    * @return result string - ignored for now
    */
   public static String startAsyncPopulateQueue() {
-    Callable<String> call = () -> {
-      LOGGER.info("started the startAsyncPopulateQueue execution ");
-      try {
+    if (!isSubmitted) {
+      Callable<String> call = () -> {
+        LOGGER.info("started the startAsyncPopulateQueue execution ");
+        try {
 
-        // open websocket and subscribe to diff_orders
-        BitsoWsClient clientEndPoint = new BitsoWsClient(new URI("wss://ws.bitso.com/"));
-        LOGGER.info("############ CONNECTED to Bitso");
-        Thread.sleep(6000);
+          // open websocket and subscribe to diff_orders
+          BitsoWsClient clientEndPoint = new BitsoWsClient(new URI("wss://ws.bitso.com/"));
+          LOGGER.info("############ CONNECTED to Bitso");
+          Thread.sleep(6000);
 
-      } catch (Exception e) {
-        LOGGER.error(e.getMessage(), e);
-      }
+        } catch (Exception e) {
+          LOGGER.error(e.getMessage(), e);
+        }
 
-      return "done?";
-    };
-    Future<String> f = exe.submit(call);
-    return "startAsyncPopulateQueue started";
+        return "done?";
+      };
+      exe.submit(call);
+      isSubmitted = true;
+      return "startAsyncPopulateQueue started";
+    } else {
+      return "startAsyncPopulateQueue was already started";
+    }
   }
 
 

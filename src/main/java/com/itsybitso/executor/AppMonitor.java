@@ -10,6 +10,8 @@ import com.itsybitso.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -35,8 +37,10 @@ public class AppMonitor extends AsyncExecutor {
   private static ExecutorService exe2;
 
   // value object that carries info for the UI - to be pushed by Websockets
-  private static DisplayData displayData = new DisplayData(0,0,0,0,
-      new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+  private static DisplayData displayData = new DisplayData(new BigDecimal(0).setScale(2, RoundingMode.DOWN),
+          new BigDecimal(200000).setScale(4, RoundingMode.DOWN), new BigDecimal(10), new BigDecimal(0),
+          0,0,0,0,
+            new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
   private static ObjectMapper objectMapper = new ObjectMapper();
 

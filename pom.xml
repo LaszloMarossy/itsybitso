@@ -199,6 +199,11 @@
             <artifactId>tyrus-client</artifactId>
             <version>1.13.1</version>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -234,21 +239,29 @@
                 </configuration>
             </plugin>
 
-            <!--<plugin>-->
-                <!--<artifactId>maven-clean-plugin</artifactId>-->
-                <!--<version>3.0.0</version>-->
-                <!--<configuration>-->
-                    <!--<filesets>-->
-                        <!--<fileset>-->
-                            <!--<directory>/Users/laszlo/dev/apache-tomcat-9.0.6/webapps/itsybitso.war</directory>-->
-                            <!--<includes>-->
-                                <!--<include>**/*</include>-->
-                            <!--</includes>-->
-                            <!--<followSymlinks>false</followSymlinks>-->
-                        <!--</fileset>-->
-                    <!--</filesets>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
+
+<!-- this plugin is env-specific for development purposes to work with an IDE; remove for production! -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>/Users/laszlo/dev/apache-tomcat-9.0.6/webapps</directory>
+                            <includes>
+                                <include>itsybitso-1.1-SNAPSHOT.war</include>
+                            </includes>
+                        </fileset>
+                        <fileset>
+                            <directory>/Users/laszlo/dev/apache-tomcat-9.0.6/webapps/itsybitso-1.1-SNAPSHOT</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
 
             <plugin>
                 <artifactId>maven-install-plugin</artifactId>

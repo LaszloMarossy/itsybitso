@@ -10,7 +10,6 @@ import java.util.concurrent.Future;
  * Base class for common code in async executors.
  */
 public class AsyncExecutor {
-
     static List<Integer> totalCounts = new ArrayList<>();
     static List<String> futureResults = new ArrayList<>();
     static List<Future<String>> futures = new ArrayList<>();
